@@ -11,6 +11,7 @@
             margin: 0;
             padding-top: 60px; /* Adjusting space for fixed header */
         }
+        
         /* Header styles */
         header {
             position: fixed;
@@ -24,6 +25,7 @@
             font-size: 1.5em;
             z-index: 1000;
         }
+
         /* Main content area */
         #game-container {
             background-color: white;
@@ -33,10 +35,12 @@
             width: 500px;
             margin: 0 auto;
         }
+
         #story-text {
             font-size: 1.2em;
             margin-bottom: 20px;
         }
+
         button {
             padding: 10px 20px;
             font-size: 1em;
@@ -47,6 +51,7 @@
             border: none;
             border-radius: 5px;
         }
+
         button:hover {
             background-color: #2980b9;
         }
@@ -55,8 +60,8 @@
 <body>
     <!-- Static Header -->
     <header>
-        <div>Welcome to the Hotel Life Game</div>
-        <div style="font-size: 0.9em;">A game of exploration and endless surprises.</div>
+        <div>Purg's Hotel</div>
+        <div style="font-size: 0.9em;">The Hotel isn't infinite in size. It's just very, very big. So big, that you can expect anything to happen. Anything.</div>
     </header>
 
     <!-- Game Content -->
@@ -123,23 +128,11 @@
         // Function to apply a random event
         function applyRandomEvent() {
             const randomEvent = events[Math.floor(Math.random() * events.length)];
-            switch (randomEvent.type) {
-                case "newEvent":
-                    alert(randomEvent.text);
-                    break;
-                case "encounter":
-                    alert(randomEvent.text);
-                    break;
-                case "rest":
-                    alert(randomEvent.text);
-                    break;
-                case "eating":
-                    alert(randomEvent.text);
-                    break;
-                case "unexpected":
-                    alert(randomEvent.text);
-                    break;
-            }
+            const eventText = randomEvent.text;
+
+            // Display event in the story text area
+            let storyText = document.getElementById("story-text");
+            storyText.innerHTML += `<p><strong>Event: </strong>${eventText}</p>`;
         }
 
         // Render the game state and choices
@@ -147,11 +140,12 @@
             let storyText = document.getElementById("story-text");
             let choicesDiv = document.getElementById("choices");
 
+            // Clear previous story text and stats, then show updated info
             storyText.innerHTML = `
-                <p>Happiness: ${player.happiness}</p>
-                <p>Energy: ${player.energy}</p>
-                <p>Mood: ${player.mood}</p>
-                <p>Where would you like to go next?</p>
+                <p><strong>Happiness:</strong> ${player.happiness}</p>
+                <p><strong>Energy:</strong> ${player.energy}</p>
+                <p><strong>Mood:</strong> ${player.mood}</p>
+                <p><strong>Current Location:</strong> You are in the hotel lobby. What would you like to do next?</p>
             `;
 
             choicesDiv.innerHTML = `
@@ -167,3 +161,4 @@
     </script>
 </body>
 </html>
+
