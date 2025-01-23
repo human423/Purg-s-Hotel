@@ -27,13 +27,22 @@ header {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     width: 500px;
     margin: 0 auto;
+    padding-top: 100px; /* Ensure game content isn't hidden by fixed header */
 }
 
+/* Story text area */
 #story-text {
     font-size: 1.2em;
     margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffcccb;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-height: 150px; /* Ensuring some space for text */
+    overflow-y: auto;  /* Allows scrolling if the text overflows */
 }
 
+/* Button styles */
 button {
     padding: 10px 20px;
     font-size: 1em;
