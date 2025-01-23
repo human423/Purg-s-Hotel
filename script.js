@@ -59,7 +59,13 @@ function applyRandomEvent() {
 
     // Display event in the story text area
     let storyText = document.getElementById("story-text");
-    storyText.innerHTML += `<p><strong>Event: </strong>${eventText}</p>`;
+    
+    // Create a new paragraph for the event
+    let eventParagraph = document.createElement("p");
+    eventParagraph.innerHTML = `<strong>Event: </strong>${eventText}`;
+    
+    // Append the event to the story text
+    storyText.appendChild(eventParagraph);
 }
 
 // Render the game state and choices
@@ -85,3 +91,4 @@ function renderGame() {
 
 // Initialize the game
 renderGame();
+
