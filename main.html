@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Own Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #game-container {
+            width: 60%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #story-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="story-text">Loading...</div>
+        <div id="choices"></div>
+    </div>
+
+    <script>
+        // Game data with scenes and choices
+        let storyData = {
+            start: {
+                text: "You wake up in a small village. The sun is rising. Do you want to explore the village or head to the forest?",
+                choices: [
+                    { text: "Explore the village", nextScene: "villageExploration" },
+                    { text: "Head to the forest", nextScene: "forestJourney" }
+                ]
+            },
+            villageExploration: {
+                text: "You wander through the village and meet a mysterious old man. He offers you a map to the forest. Do you accept it or refuse?",
+                choices: [
+                    { text: "Accept the map", nextScene: "mapAccepted" },
+                    { text: "Refuse the map", nextScene: "mapRefused" }
+                ]
+            },
+            forestJourney: {
+                text: "You make your way through the forest. It's quiet, but you hear rustling in the bushes. Do you investigate or keep walking?",
+                choices: [
+                    { text: "Investigate the rustling", nextScene: "rustlingInvestigated" },
+                    { text: "Keep walking", nextScene: "keepWalking" }
+                ]
+            },
+            mapAccepted: {
+                text: "The old man smiles as you take the map. You now know of a hidden treasure in the forest. Do you go looking for it?",
+                choices: [
+                    { text: "Look for the treasure", nextScene: "treasureFound" },
+                    { text: "Return to the village", nextScene: "villageExploration" }
+                ]
+            },
+            mapRefused: {
+                text: "The old man looks disappointed but leaves you to continue your journey. Do you go to the forest or head back to the village?",
+                choices: [
+                    { text: "Go to the forest", nextScene: "forestJourney" },
+                    { text: "Return to the village", nextScene: "villageExploration" }
+                ]
+            },
+            rustlingInvestigated: {
+                text: "You discover a bear in the bushes! It growls menacingly. Do you fight or run away?",
+                choices: [
+                    { text: "Fight the bear", nextScene: "bearFight" },
+                    { text: "Run away", nextScene: "bearRunAway" }
+                ]
+            },
+            keepWalking: {
+                text: "You continue walking and find a peaceful clearing. Do you rest here or keep exploring?",
+                choices: [
+                    { text: "Rest in the clearing", nextScene: "restingInClearing" },
+                    { text: "Keep exploring", nextScene: "forestJourney" }
+                ]
+            },
+            treasureFound: {
+                text: "You find the treasure hidden beneath an ancient tree. It's filled with gold! Congratulations!",
+                choices: [
+                    { text: "Start again", nextScene: "start" }
+                ]
+            },
+            bearFight: {
+                text: "You bravely fight the bear and manage to scare it off! You're victorious, but exhausted. Do you rest or continue your journey?",
+                choices: [
+                    { text: "Rest", nextScene: "restingInClearing" },
+                    { text: "Continue", nextScene: "forestJourney" }
+                ]
+            },
+            bearRunAway: {
+                text: "You run away and escape the bear. You’re safe, but lost. Do you head back or keep exploring?",
+                choices: [
+                    { text: "Head back", nextScene: "start" },
+                    { text: "Keep exploring", nextScene: "forestJourney" }
+                ]
+            },
+            restingInClearing: {
+                text: "You rest in the clearing and regain your strength. It's a peaceful place. Do you want to head back to the village now?",
+                choices: [
+                    { text: "Head back to the village", nextScene: "villageExploration" },
+                    { text: "Stay longer", nextScene: "restingInClearing" }
+                ]
+            }
+        };
+
+        // Start the game from the starting scene
+        let currentScene = "start";
+
+        // Function to render the scene based on the current choice
+        function renderScene(scene) {
+            let storyText = document.getElementById("story-text");
+            let choicesDiv = document.getElementById("choices");
+
+            // Display the current scene's text
+            storyText.innerHTML = storyData[scene].text;
+
+            // Clear previous choices
+            choicesDiv.innerHTML = "";
+
+            // Render the available choices
+            storyData[scene].choices.forEach(choice => {
+                let button = document.createElement("button");
+                button.innerHTML = choice.text;
+                button.onclick = () => renderScene(choice.nextScene);
+                choicesDiv.appendChild(button);
+            });
+        }
+
+        // Start the game
+        renderScene(currentScene);
+    </script>
+</body>
+</html>
