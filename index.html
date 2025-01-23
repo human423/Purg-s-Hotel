@@ -3,24 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Your Own Adventure</title>
+    <title>Hotel Life Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
         #game-container {
-            width: 60%;
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            width: 500px;
+            margin: 0 auto;
         }
         #story-text {
             font-size: 1.2em;
@@ -43,116 +39,109 @@
 </head>
 <body>
     <div id="game-container">
-        <div id="story-text">Loading...</div>
+        <div id="story-text">Welcome to the Hotel! What will you do today?</div>
         <div id="choices"></div>
     </div>
 
     <script>
-        // Game data with scenes and choices
-        let storyData = {
-            start: {
-                text: "You wake up in a small village. The sun is rising. Do you want to explore the village or head to the forest?",
-                choices: [
-                    { text: "Explore the village", nextScene: "villageExploration" },
-                    { text: "Head to the forest", nextScene: "forestJourney" }
-                ]
-            },
-            villageExploration: {
-                text: "You wander through the village and meet a mysterious old man. He offers you a map to the forest. Do you accept it or refuse?",
-                choices: [
-                    { text: "Accept the map", nextScene: "mapAccepted" },
-                    { text: "Refuse the map", nextScene: "mapRefused" }
-                ]
-            },
-            forestJourney: {
-                text: "You make your way through the forest. It's quiet, but you hear rustling in the bushes. Do you investigate or keep walking?",
-                choices: [
-                    { text: "Investigate the rustling", nextScene: "rustlingInvestigated" },
-                    { text: "Keep walking", nextScene: "keepWalking" }
-                ]
-            },
-            mapAccepted: {
-                text: "The old man smiles as you take the map. You now know of a hidden treasure in the forest. Do you go looking for it?",
-                choices: [
-                    { text: "Look for the treasure", nextScene: "treasureFound" },
-                    { text: "Return to the village", nextScene: "villageExploration" }
-                ]
-            },
-            mapRefused: {
-                text: "The old man looks disappointed but leaves you to continue your journey. Do you go to the forest or head back to the village?",
-                choices: [
-                    { text: "Go to the forest", nextScene: "forestJourney" },
-                    { text: "Return to the village", nextScene: "villageExploration" }
-                ]
-            },
-            rustlingInvestigated: {
-                text: "You discover a bear in the bushes! It growls menacingly. Do you fight or run away?",
-                choices: [
-                    { text: "Fight the bear", nextScene: "bearFight" },
-                    { text: "Run away", nextScene: "bearRunAway" }
-                ]
-            },
-            keepWalking: {
-                text: "You continue walking and find a peaceful clearing. Do you rest here or keep exploring?",
-                choices: [
-                    { text: "Rest in the clearing", nextScene: "restingInClearing" },
-                    { text: "Keep exploring", nextScene: "forestJourney" }
-                ]
-            },
-            treasureFound: {
-                text: "You find the treasure hidden beneath an ancient tree. It's filled with gold! Congratulations!",
-                choices: [
-                    { text: "Start again", nextScene: "start" }
-                ]
-            },
-            bearFight: {
-                text: "You bravely fight the bear and manage to scare it off! You're victorious, but exhausted. Do you rest or continue your journey?",
-                choices: [
-                    { text: "Rest", nextScene: "restingInClearing" },
-                    { text: "Continue", nextScene: "forestJourney" }
-                ]
-            },
-            bearRunAway: {
-                text: "You run away and escape the bear. You’re safe, but lost. Do you head back or keep exploring?",
-                choices: [
-                    { text: "Head back", nextScene: "start" },
-                    { text: "Keep exploring", nextScene: "forestJourney" }
-                ]
-            },
-            restingInClearing: {
-                text: "You rest in the clearing and regain your strength. It's a peaceful place. Do you want to head back to the village now?",
-                choices: [
-                    { text: "Head back to the village", nextScene: "villageExploration" },
-                    { text: "Stay longer", nextScene: "restingInClearing" }
-                ]
-            }
+        // Game state
+        let player = {
+            happiness: 70,
+            energy: 80,
+            mood: 75
         };
 
-        // Start the game from the starting scene
-        let currentScene = "start";
+        let gameOver = false;
+        
+        // Possible locations and events
+        const locations = [
+            { name: "Lobby", description: "You are in the hotel lobby. There's a cozy lounge area and a bulletin board with upcoming events." },
+            { name: "Restaurant", description: "You enter the hotel restaurant. The food smells delicious. There's a new menu for the day." },
+            { name: "Room", description: "You're in your hotel room. It's your personal space. Time to relax or maybe order some room service." },
+            { name: "Spa", description: "You arrive at the spa. It's quiet and peaceful. Maybe a massage would lift your mood?" }
+        ];
 
-        // Function to render the scene based on the current choice
-        function renderScene(scene) {
+        // Events that happen randomly or based on choice
+        const events = [
+            { type: "newEvent", text: "A new event has been announced in the lobby! A dance party tonight!" },
+            { type: "encounter", text: "You meet another guest. They're friendly and invite you to hang out!" },
+            { type: "rest", text: "You rest in your room for a while. Your energy improves!" },
+            { type: "eating", text: "You enjoy a nice meal at the restaurant. Your happiness increases!" },
+            { type: "unexpected", text: "Something unexpected happens in the lobby! A surprise fire drill!" }
+        ];
+
+        // Function to handle player choices
+        function handleChoice(choice) {
+            if (gameOver) return;
+
+            switch (choice) {
+                case "rest":
+                    player.energy = Math.min(100, player.energy + 20);
+                    player.mood = Math.min(100, player.mood + 10);
+                    break;
+                case "attendEvent":
+                    player.happiness += 15;
+                    player.mood = Math.max(0, player.mood - 5);  // Maybe too much partying decreases mood a bit
+                    break;
+                case "meetGuest":
+                    player.happiness += 10;
+                    break;
+                case "eat":
+                    player.happiness += 20;
+                    break;
+            }
+
+            // Apply a random event after each choice
+            applyRandomEvent();
+
+            // Render the game state after the action
+            renderGame();
+        }
+
+        // Function to apply a random event
+        function applyRandomEvent() {
+            const randomEvent = events[Math.floor(Math.random() * events.length)];
+            switch (randomEvent.type) {
+                case "newEvent":
+                    alert(randomEvent.text);
+                    break;
+                case "encounter":
+                    alert(randomEvent.text);
+                    break;
+                case "rest":
+                    alert(randomEvent.text);
+                    break;
+                case "eating":
+                    alert(randomEvent.text);
+                    break;
+                case "unexpected":
+                    alert(randomEvent.text);
+                    break;
+            }
+        }
+
+        // Render the game state and choices
+        function renderGame() {
             let storyText = document.getElementById("story-text");
             let choicesDiv = document.getElementById("choices");
 
-            // Display the current scene's text
-            storyText.innerHTML = storyData[scene].text;
+            storyText.innerHTML = `
+                <p>Happiness: ${player.happiness}</p>
+                <p>Energy: ${player.energy}</p>
+                <p>Mood: ${player.mood}</p>
+                <p>Where would you like to go next?</p>
+            `;
 
-            // Clear previous choices
-            choicesDiv.innerHTML = "";
-
-            // Render the available choices
-            storyData[scene].choices.forEach(choice => {
-                let button = document.createElement("button");
-                button.innerHTML = choice.text;
-                button.onclick = () => renderScene(choice.nextScene);
-                choicesDiv.appendChild(button);
-            });
+            choicesDiv.innerHTML = `
+                <button onclick="handleChoice('rest')">Rest in Room</button>
+                <button onclick="handleChoice('attendEvent')">Attend Event in Lobby</button>
+                <button onclick="handleChoice('eat')">Eat at Restaurant</button>
+                <button onclick="handleChoice('meetGuest')">Meet Other Guest</button>
+            `;
         }
 
-        // Start the game
-        renderScene(currentScene);
+        // Initialize the game
+        renderGame();
     </script>
 </body>
 </html>
